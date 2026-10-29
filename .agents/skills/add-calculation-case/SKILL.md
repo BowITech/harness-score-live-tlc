@@ -5,7 +5,7 @@ description: Use when adding or changing a meeting cost calculation rule, includ
 
 # Adicionar ou alterar um caso de cálculo
 
-Use esta skill para mudar regras em `calculateMeetingCost`. Não crie testes, lint ou scripts npm novos.
+Use esta skill para mudar regras em `calculateMeetingCost`. Atualize os testes em `test/` para o caso novo.
 
 ## 1. Localize a regra
 
@@ -56,25 +56,15 @@ Se a nova regra mudar uma linha desta tabela, atualize a rule em `.agents/rules/
 
 ## 5. Verifique com comandos que existem
 
-Não rode `npm test`, `npm run lint` nem `npm run typecheck`: esses scripts não existem. O único script npm é `start`.
+Siga `.agents/workflows/verificar.md`. Os testes cobrem cálculo válido, arredondamento, intervalos inválidos e entradas não finitas.
 
-1. Caminho feliz:
-
-   ```powershell
-   npm start -- 6 45 120
-   ```
-
-   Saída em `stdout` deve continuar contendo `540.00` se a fórmula não mudou.
-
-2. Cada borda relevante: rode `npm start --` com os três números (ou de propósito incompletos) e confira `stderr` mais código de saída 1 em falha.
-
-3. Confirme que sucesso não foi para `stderr` e que falha não saiu com código 0.
-
-4. Siga `.agents/workflows/verificar.md` se a tarefa pediu verificação completa.
+1. Inclua ou ajuste um caso em `test/meeting-cost.test.js`.
+2. `npm run check`
+3. Se a fórmula não mudou, `npm start -- 6 45 120` ainda mostra `540.00`.
 
 ## 6. Encerramento
 
 - Domínio puro, CLI como I/O.
 - Invariantes antigos intactos, salvo pedido contrário.
-- Rule de `src/**` atualizada se o contrato mudou.
-- Nenhuma dependência, teste ou sensor novo adicionado por conta própria.
+- Rule de `src/**` e testes alinhados ao contrato.
+- Sem dependências de runtime novas.
