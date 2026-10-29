@@ -1,0 +1,46 @@
+root = true
+
+[*]
+charset = utf-8
+end_of_line = crlf
+insert_final_newline = true
+indent_style = space
+indent_size = 4
+trim_trailing_whitespace = true
+
+[*.{csproj,props,targets,json,yml,yaml,md}]
+indent_size = 2
+
+[*.{cs,csx}]
+dotnet_sort_system_directives_first = true
+# Align with the repository's code quality and analyzers.
+dotnet_style_allow_multiple_blank_lines_experimental = false
+csharp_new_line_before_open_brace = all
+csharp_preserve_single_line_blocks = true
+csharp_preserve_single_line_statements = true
+csharp_indent_case_contents = true
+csharp_indent_switch_labels = true
+csharp_space_after_cast = false
+csharp_space_after_keywords_in_control_flow_statements = true
+csharp_space_before_colon_in_inheritance_clause = true
+csharp_space_after_colon_in_inheritance_clause = true
+csharp_space_around_binary_operators = before_and_after
+csharp_space_between_method_declaration_name_and_open_parenthesis = false
+csharp_space_between_method_call_name_and_open_parenthesis = false
+
+[*.cs]
+# IMHO: prefer explicit scoping and sane naming.
+dotnet_diagnostic.IDE0001.severity = warning
+dotnet_diagnostic.IDE0002.severity = warning
+dotnet_diagnostic.IDE0005.severity = warning
+dotnet_diagnostic.IDE0060.severity = warning
+dotnet_diagnostic.IDE0079.severity = warning
+
+# Recommended .NET analyzers.
+dotnet_diagnostic.CA1000.severity = warning
+dotnet_diagnostic.CA1031.severity = warning
+dotnet_diagnostic.CA1305.severity = warning
+dotnet_diagnostic.CA1822.severity = warning
+
+# Allow main entry point defaults for CLI programs.
+dotnet_diagnostic.CA1050.severity = none

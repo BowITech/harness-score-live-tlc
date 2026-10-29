@@ -1,0 +1,63 @@
+name: CI
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+  workflow_dispatch:
+  schedule:
+    - cron: '0 6 * * 1'
+
+permissions:
+  contents: read
+
+jobs:
+  quality-gate:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Setup .NET SDK
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 8.0.420
+          cache: true
+          cache-dependency-path: |
+            **/packages.lock.json
+            Directory.Packages.props
+
+      - name: Restore dependencies
+        run: dotnet restore MeetingCost.sln --locked-mode
+
+      - name: Verify formatting
+        run: dotnet tool restore && dotnet format MeetingCost.sln --verify-no-changes --verbosity minimal
+
+      - name: Build solution
+        run: dotnet build MeetingCost.sln --configuration Release --no-restore
+
+      - name: Run tests
+        run: dotnet test MeetingCost.sln --configuration Release --no-restore --logger "trx;LogFileName=ci-tests.trx"
+
+      - name: Run static analysis
+        run: dotnet build MeetingCost.sln --configuration Release --no-restore /p:EnforceCodeStyleInBuild=true /p:TreatWarningsAsErrors=true /p:EnableNETAnalyzers=true /p:AnalysisLevel=latest-recommended
+
+      - name: Run repository gate
+        run: pwsh ./build.ps1 check
+
+  dependency-audit:
+    runs-on: ubuntu-latest
+    needs: quality-gate
+    if: github.event_name != 'pull_request' || github.event.pull_request.head.repo.fork == false
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Setup .NET SDK
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 8.0.420
+
+      - name: Audit package vulnerabilities
+        run: dotnet list MeetingCost.sln package --vulnerable --include-transitive

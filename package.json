@@ -1,0 +1,12 @@
+{
+  "name": "meeting-cost-cli",
+  "private": true,
+  "scripts": {
+    "build": "dotnet build MeetingCost.sln --configuration Release --no-restore",
+    "test": "dotnet test MeetingCost.sln --configuration Release --no-restore --logger \"trx;LogFileName=package-tests.trx\"",
+    "format": "dotnet tool restore && dotnet format MeetingCost.sln",
+    "format-check": "dotnet tool restore && dotnet format MeetingCost.sln --verify-no-changes --verbosity minimal",
+    "lint": "dotnet build MeetingCost.sln --configuration Release --no-restore /p:EnforceCodeStyleInBuild=true /p:TreatWarningsAsErrors=true /p:EnableNETAnalyzers=true /p:AnalysisLevel=latest-recommended",
+    "check": "pwsh ./build.ps1 check"
+  }
+}
